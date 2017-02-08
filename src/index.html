@@ -13,20 +13,19 @@
 	</header>
 	<main>
 		<div id="canvas"></div>
-		<ul class="legends">
-			<li>
-				<div class="legends__color"></div>
-				<select class="legends__select" id="variable-1">
-					<option>Test</option>
-				</select>
-			</li>
-			<li>
-				<div class="legends__color"></div>
-				<select class="legends__select" id="variable-2">
-					<option>Test</option>
-				</select>
-			</li>
-		</ul>
+		<div class="legends">
+			<h2 class="legends__title">
+				Dimensions
+			</h2>
+			<div class="legends__item">
+				<span class="legends__color" id="dimension-1-color"></span>
+				<select class="legends__select" id="dimension-1-select"></select>
+			</div>
+			<div class="legends__item">
+				<span class="legends__color" id="dimension-2-color"></span>
+				<select class="legends__select" id="dimension-2-select"></select>
+			</div>
+		</div>
 	</main>
 	<footer>
 		<p>
@@ -35,6 +34,7 @@
 	</footer>
 	<script src="js/d3.min.js"></script>
 	<script src="js/d3-selection-multi.v1.min.js"></script>
+	<script src="js/d3-shape.v1.min.js"></script>
 	<script src="js/main.js"></script>
 	<script>document.write('<script src="http://' + (location.host || 'localhost').split(':')[0] + ':35729/livereload.js?snipver=1"></' + 'script>')</script>
 </body>

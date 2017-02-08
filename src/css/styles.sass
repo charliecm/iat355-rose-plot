@@ -67,26 +67,28 @@ main
 	max-width: rem(960px)
 
 .legends
+	display: flex
 	padding-left: rem(18px)
 	width: rem(200px)
-	list-style: none
-	display: flex
 	justify-content: center
 	flex-direction: column
-	> li
-		display: flex
-		margin-bottom: rem(6px)
+
+.legends__item
+	display: flex
+	margin-bottom: rem(6px)
+
+.legends__title
+	font-size: rem(16px)
 
 .legends__color
 	flex-shrink: 0
+	margin-right: rem(6px)
 	border-radius: rem(4px)
 	width: rem(32px)
 	height: rem(24px)
-	background-color: red
 
 .legends__select
 	display: block
-	margin-left: rem(6px)
 	border-radius: rem(4px)
 	width: 100%
 	height: rem(24px)
