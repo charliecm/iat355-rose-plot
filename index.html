@@ -1,0 +1,41 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<title>Rose Plot Diagram</title>
+	<link href="https://fonts.googleapis.com/css?family=Libre+Baskerville" rel="stylesheet">
+	<link href="css/styles.css" rel="stylesheet">
+</head>
+<body>
+	<header>
+		<h1>
+			Diagram of the Causes of Mortality in the Army in the East
+		</h1>
+	</header>
+	<main>
+		<div id="canvas"></div>
+		<ul class="legends">
+			<li>
+				<div class="legends__color"></div>
+				<select class="legends__select" id="variable-1">
+					<option>Test</option>
+				</select>
+			</li>
+			<li>
+				<div class="legends__color"></div>
+				<select class="legends__select" id="variable-2">
+					<option>Test</option>
+				</select>
+			</li>
+		</ul>
+	</main>
+	<footer>
+		<p>
+			Created by <a href="https://twitter.com/@charliecm">Charlie Chao</a>.
+		</p>
+	</footer>
+	<script src="js/d3.min.js"></script>
+	<script src="js/d3-selection-multi.v1.min.js"></script>
+	<script src="js/main.js"></script>
+	<script>document.write('<script src="http://' + (location.host || 'localhost').split(':')[0] + ':35729/livereload.js?snipver=1"></' + 'script>')</script>
+</body>
+</html>
