@@ -58,6 +58,36 @@ a
 		text-decoration: underline
 
 #canvas
+	flex: auto
+	overflow: hidden
+
+main
 	margin: 0 auto
+	display: flex
+	max-width: rem(960px)
+
+.legends
+	padding-left: rem(18px)
+	width: rem(200px)
+	list-style: none
+	display: flex
+	justify-content: center
+	flex-direction: column
+	> li
+		display: flex
+		margin-bottom: rem(6px)
+
+.legends__color
+	flex-shrink: 0
+	border-radius: rem(4px)
+	width: rem(32px)
+	height: rem(24px)
+	background-color: red
+
+.legends__select
+	display: block
+	margin-left: rem(6px)
+	border-radius: rem(4px)
 	width: 100%
-	max-width: rem(1024px)
+	height: rem(24px)
+	appearance: none
