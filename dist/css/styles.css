@@ -133,8 +133,6 @@ a {
 .canvas-wrap {
   overflow-x: auto;
   overflow-y: hidden;
-  margin-left: -1rem;
-  margin-right: -1rem;
   padding-bottom: 0.75rem;
   width: 100%; }
   @media only screen and (min-width: 796px) {
@@ -159,6 +157,7 @@ main {
   flex-direction: column; }
   @media only screen and (min-width: 796px) {
     main {
+      padding: 0 1rem;
       flex-direction: row; } }
 
 .legends {

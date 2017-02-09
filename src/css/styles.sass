@@ -83,8 +83,6 @@ a
 .canvas-wrap
 	overflow-x: auto
 	overflow-y: hidden
-	margin-left: rem(-$wrap-padding)
-	margin-right: rem(-$wrap-padding)
 	padding-bottom: rem(12px)
 	width: 100%
 	+bp-gt($bp-small)
@@ -107,6 +105,7 @@ main
 	max-width: rem($body-width-max)
 	flex-direction: column
 	+bp-gt($bp-small)
+		padding: 0 rem($wrap-padding)
 		flex-direction: row
 
 .legends
