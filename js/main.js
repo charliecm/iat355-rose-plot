@@ -77,16 +77,16 @@
 	// Setup diagram canvas
 	function setupDiagram() {
 		gWrap = svg.append('g');
-		gDataArcs = gWrap.append('g').selectAll('path').data(data);
-		gLabelArcs = gWrap.append('g').selectAll('path').data(data);
-		gLabels = gWrap.append('g').selectAll('text').data(data);
+		gDataArcs = gWrap.append('g');
+		gLabelArcs = gWrap.append('g');
+		gLabels = gWrap.append('g');
 	}
 
 	// Draws the diagram
 	function redraw() {
 		var width = canvas.clientWidth,
 			radius = width / 2,
-			maxRadius = radius - 32,
+			radiusMax = radius - 32,
 			dimension1 = dimensionSelect1.value,
 			dimension2 = dimensionSelect2.value;
 		console.log('Redraw:', dimension1, dimension2);
@@ -97,16 +97,17 @@
 		});
 		gWrap.attr('transform', 'translate(' + radius + ', ' + radius +')');
 		// Data arcs
-		gDataArcs
+		gDataArcs.selectAll('path')
+			.data(data)
 			.enter()
 				.append('path')
-			.merge(gDataArcs)
+			.merge(gDataArcs.selectAll('path'))
 				.attrs({
 					d: function(d, i) {
 						var r = Math.PI / 12;
 						return arc({
 							innerRadius: 30,
-							outerRadius: 200 + i * 6,
+							outerRadius: Math.min(200 + i * 6, radiusMax),
 							startAngle: i * r,
 							endAngle: i * r + r
 						});
@@ -115,10 +116,11 @@
 				})
 			.exit().remove();
 		// Label arcs
-		gLabelArcs
+		gLabelArcs.selectAll('path')
+			.data(data)
 			.enter()
 				.append('path')
-			.merge(gLabelArcs)
+			.merge(gLabelArcs.selectAll('path'))
 				.attrs({
 					id: function(d, i) {
 						return labelArcPrefix + i;
@@ -127,7 +129,7 @@
 						var r = Math.PI / 12;
 						return arc({
 							innerRadius: 0,
-							outerRadius: maxRadius,
+							outerRadius: radiusMax,
 							startAngle: i * r,
 							endAngle: i * r + r
 						});
@@ -136,11 +138,13 @@
 				})
 			.exit().remove();
 		// Labels
-		gLabels
-			.enter(gLabels)
+		var prevYear;
+		gLabels.selectAll('text')
+			.data(data)
+			.enter()
 				.append('text')
-			.merge(gLabels)
-				.attr('dy', -4)
+			.merge(gLabels.selectAll('text'))
+				.attr('dy', -6)
 				.append('textPath')
 					.attrs({
 						href: function(d, i) {
@@ -148,7 +152,12 @@
 						}
 					})
 					.text(function(d, i) {
-						return d.month + ' ' + d.year;
+						var label = d.month;
+						if (d.year != prevYear) {
+							prevYear = d.year;
+							label += ' ' + d.year;
+						}
+						return label;
 					})
 			.exit().remove();
 	}
