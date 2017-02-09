@@ -2,16 +2,9 @@
  * Stylesheet
  */
 
-// Variables
-$base-em: 16px
-$font-primary: 'Libre Baskerville', serif
-$font-secondary: serif
-$color-text: #161616
-$color-bg: white
-
-// Converts unit to rem
-@function rem($target)
-    @return ($target / $base-em) + 0rem
+@import 'settings'
+@import 'functions'
+@import 'reset'
 
 *, *:before, *:after
     box-sizing: border-box
@@ -21,7 +14,7 @@ html
 	font-size: 100%
 
 body
-	margin: 0 rem(16px)
+	margin: 0
 	height: 100%
 	background-color: white
 	font-family: $font-primary
@@ -34,21 +27,22 @@ header, footer
 	text-align: center
 
 header
-	margin: 0 auto
+	margin: rem(48px) auto 0 auto
 	padding-top: rem(64px)
-	max-width: rem(560px)
+	max-width: rem(720px)
 
 footer
-	margin: rem(24px) 0 rem(48px) 0
+	margin-bottom: rem(96px)
 	font-size: rem(14px)
 
-p, h1
+p, h1, h2
 	margin-top: 0
+	margin-bottom: rem(18px)
 
 h1
 	font-size: rem(32px)
+	font-weight: bold
 	line-height: rem(42px)
-	margin-bottom: rem(24px)
 
 p
 	margin-bottom: rem(18px)
@@ -60,40 +54,92 @@ a
 	&:hover
 		text-decoration: underline
 
-#canvas
-	flex: auto
-	overflow: hidden
+.wrap
+	padding: 0 rem($wrap-padding)
+
+.title
+	font-size: rem(24px)
+	line-height: rem(32px)
+	margin-bottom: rem(12px)
+	text-transform: uppercase
+	+bp-gt($bp-small)
+		font-size: rem(32px)
+		line-height: rem(42px)
+
+.subtitle
+	font-size: rem(14px)
+	line-height: rem(18px)
+	text-transform: uppercase
+	+bp-gt($bp-small)
+		font-size: rem(18px)
+		line-height: rem(24px)
+
+.small
+	font-size: 0.75em
+
+.canvas
+	min-width: rem($canvas-width-min)
+
+.canvas-wrap
+	overflow-x: auto
+	overflow-y: hidden
+	margin-left: rem(-$wrap-padding)
+	margin-right: rem(-$wrap-padding)
+	padding-bottom: rem(12px)
+	width: 100%
+	+bp-gt($bp-small)
+		margin-left: 0
+		margin-right: 0
+		padding-bottom: 0
+
+.diagram__date
+	font-weight: bold
+	text-transform: uppercase
+	font-size: rem(12px)
+
+.diagram__value
 	font-size: rem(12px)
 
 main
-	margin: 0 auto
+	overflow: hidden
+	margin: rem(48px) auto rem(64px) auto
 	display: flex
-	max-width: rem(960px)
+	max-width: rem($body-width-max)
+	flex-direction: column
+	+bp-gt($bp-small)
+		flex-direction: row
 
 .legends
 	display: flex
-	padding-left: rem(18px)
-	width: rem(200px)
 	justify-content: center
 	flex-direction: column
+	margin: 0 auto
+	padding-top: rem(24px)
+	width: rem($legends-width)
+	+bp-gt($bp-small)
+		padding-top: 0
+		padding-left: rem(24px)
 
 .legends__item
 	display: flex
 	margin-bottom: rem(6px)
 
 .legends__title
-	font-size: rem(16px)
+	margin-bottom: rem(12px)
+	font-size: rem(12px)
+	font-weight: bold
+	text-transform: uppercase
 
 .legends__color
 	flex-shrink: 0
-	margin-right: rem(6px)
-	border-radius: rem(4px)
+	margin-right: rem(4px)
+	border-radius: rem(3px)
 	width: rem(32px)
 	height: rem(24px)
+	vertical-align: top
 
 .legends__select
 	display: block
-	border-radius: rem(4px)
 	width: 100%
 	height: rem(24px)
 	appearance: none

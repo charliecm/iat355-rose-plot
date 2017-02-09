@@ -13,10 +13,13 @@
 	var canvas = document.getElementById('canvas'),
 		svg = d3.select(canvas).append('svg'),
 		arc = d3.arc(),
-		gWrap, gDataArcs, gLabelArcs, gLabels,
+		gWrap,
+		gArcLines, gDataArcs1, gDataArcs2, gLabelArcs,
+		gDates, gValues1, gValues2,
 		labelArcPrefix = 'labelArc',
+		lineColor = '#EEE',
 		dimensionColor1 = '#1F77B4',
-		dimensionColor2 = '#E377C2',
+		dimensionColor2 = '#D62728',
 		dimensionSelect1 = document.getElementById('dimension-1-select'),
 		dimensionSelect2 = document.getElementById('dimension-2-select');
 
@@ -77,42 +80,92 @@
 	// Setup diagram canvas
 	function setupDiagram() {
 		gWrap = svg.append('g');
-		gDataArcs = gWrap.append('g');
+		gArcLines = gWrap.append('g');
+		gDataArcs1 = gWrap.append('g');
+		gDataArcs2 = gWrap.append('g');
 		gLabelArcs = gWrap.append('g');
-		gLabels = gWrap.append('g');
+		gDates = gWrap.append('g');
+		gValues1 = gWrap.append('g');
+		gValues2 = gWrap.append('g');
 	}
 
 	// Draws the diagram
 	function redraw() {
 		var width = canvas.clientWidth,
 			radius = width / 2,
-			radiusMax = radius - 32,
+			radiusMax = radius - 54,
+			segmentAngle = Math.PI / 12,
 			dimension1 = dimensionSelect1.value,
-			dimension2 = dimensionSelect2.value;
-		console.log('Redraw:', dimension1, dimension2);
+			dimension2 = dimensionSelect2.value,
+			max = d3.max(data, function(d) {
+				return Math.max(d[dimension1], d[dimension2]);
+			}),
+			scale = d3.scaleLinear().domain([0, max]).range([0, radiusMax]),
+			prevYear;
 		// Resize
 		svg.attrs({
 			width: width,
 			height: width
 		});
 		gWrap.attr('transform', 'translate(' + radius + ', ' + radius +')');
-		// Data arcs
-		gDataArcs.selectAll('path')
+		// Arc lines
+		gArcLines.selectAll('line')
+			.data(data)
+			.enter()
+				.append('line')
+			.merge(gArcLines.selectAll('line'))
+				.attrs({
+					x1: 0,
+					y1: 0,
+					x2: function(d, i) {
+						return Math.cos(i * segmentAngle - Math.PI/2) * radiusMax;
+					},
+					y2: function(d, i) {
+						return Math.sin(i * segmentAngle - Math.PI/2) * radiusMax;
+					},
+					stroke: lineColor
+				})
+			.exit().remove();
+		// Data arcs (dimension 1)
+		gDataArcs1.selectAll('path')
 			.data(data)
 			.enter()
 				.append('path')
-			.merge(gDataArcs.selectAll('path'))
+			.merge(gDataArcs1.selectAll('path'))
 				.attrs({
 					d: function(d, i) {
-						var r = Math.PI / 12;
+						var d1 = d[dimension1],
+							d2 = d[dimension2],
+							isLarger = d1 > d2;
 						return arc({
-							innerRadius: 30,
-							outerRadius: Math.min(200 + i * 6, radiusMax),
-							startAngle: i * r,
-							endAngle: i * r + r
+							innerRadius: scale(isLarger ? d2 : 0),
+							outerRadius: scale(d1),
+							startAngle: i * segmentAngle,
+							endAngle: i * segmentAngle + segmentAngle
 						});
 					},
 					fill: dimensionColor1
+				})
+			.exit().remove();
+		// Data arcs (dimension 2)
+		gDataArcs2.selectAll('path')
+			.data(data)
+			.enter()
+				.append('path')
+			.merge(gDataArcs2.selectAll('path'))
+				.attrs({
+					d: function(d, i) {
+						var d1 = d[dimension1],
+							d2 = d[dimension2],
+							isLarger = d2 > d3;
+						return arc({
+							innerRadius: scale(isLarger ? d1 : 0),
+							outerRadius: scale(d2),
+							startAngle: i * segmentAngle,
+							endAngle: i * segmentAngle + segmentAngle
+						});
+					},
+					fill: dimensionColor2
 				})
 			.exit().remove();
 		// Label arcs
@@ -126,27 +179,27 @@
 						return labelArcPrefix + i;
 					},
 					d: function(d, i) {
-						var r = Math.PI / 12;
 						return arc({
 							innerRadius: 0,
 							outerRadius: radiusMax,
-							startAngle: i * r,
-							endAngle: i * r + r
+							startAngle: i * segmentAngle,
+							endAngle: i * segmentAngle + segmentAngle
 						});
 					},
 					fill: 'none'
 				})
 			.exit().remove();
-		// Labels
-		var prevYear;
-		gLabels.selectAll('text')
+		// Dates
+		gDates.selectAll('textPath').remove();
+		gDates.selectAll('text')
 			.data(data)
 			.enter()
 				.append('text')
-			.merge(gLabels.selectAll('text'))
-				.attr('dy', -6)
+			.merge(gDates.selectAll('text'))
+				.attr('dy', -38)
 				.append('textPath')
 					.attrs({
+						class: 'diagram__date',
 						href: function(d, i) {
 							return '#' + labelArcPrefix + i;
 						}
@@ -160,6 +213,48 @@
 						return label;
 					})
 			.exit().remove();
+		// Dimension 1 values
+		gValues1.selectAll('textPath').remove();
+		gValues1.selectAll('text')
+			.data(data)
+			.enter()
+				.append('text')
+			.merge(gValues1.selectAll('text'))
+				.attr('dy', -22)
+				.append('textPath')
+					.attrs({
+						class: 'diagram__value',
+						fill: dimensionColor1,
+						href: function(d, i) {
+							return '#' + labelArcPrefix + i;
+						}
+					})
+					.attr('class', 'diagram__value')
+					.text(function(d, i) {
+						return d[dimension1];
+					})
+			.exit().remove();
+		// Dimension 2 values
+		gValues2.selectAll('textPath').remove();
+		gValues2.selectAll('text')
+			.data(data)
+			.enter()
+				.append('text')
+			.merge(gValues2.selectAll('text'))
+				.attr('dy', -6)
+				.append('textPath')
+					.attrs({
+						class: 'diagram__value',
+						fill: dimensionColor2,
+						href: function(d, i) {
+							return '#' + labelArcPrefix + i;
+						}
+					})
+					.text(function(d, i) {
+						return d[dimension2];
+					})
+			.exit().remove();
+		console.log('Redraw:', dimension1, dimension2);
 	}
 
 	// Fetches and parses the data
