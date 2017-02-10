@@ -98,7 +98,7 @@
 			dimension1 = dimensionSelect1.value,
 			dimension2 = dimensionSelect2.value,
 			max = d3.max(data, function(d) {
-				return Math.max(d[dimension1], d[dimension2]);
+				return d[dimension1] + d[dimension2];
 			}),
 			scale = d3.scaleLinear().domain([0, max]).range([0, radiusMax]),
 			prevYear;
@@ -134,12 +134,9 @@
 			.merge(gDataArcs1.selectAll('path'))
 				.attrs({
 					d: function(d, i) {
-						var d1 = d[dimension1],
-							d2 = d[dimension2],
-							isLarger = d1 > d2;
 						return arc({
-							innerRadius: scale(isLarger ? d2 : 0),
-							outerRadius: scale(d1),
+							innerRadius: 0,
+							outerRadius: scale(d[dimension1]),
 							startAngle: i * segmentAngle,
 							endAngle: i * segmentAngle + segmentAngle
 						});
@@ -155,12 +152,9 @@
 			.merge(gDataArcs2.selectAll('path'))
 				.attrs({
 					d: function(d, i) {
-						var d1 = d[dimension1],
-							d2 = d[dimension2],
-							isLarger = d2 > d3;
 						return arc({
-							innerRadius: scale(isLarger ? d1 : 0),
-							outerRadius: scale(d2),
+							innerRadius: scale(d[dimension1]),
+							outerRadius: scale(d[dimension1]) + scale(d[dimension2]),
 							startAngle: i * segmentAngle,
 							endAngle: i * segmentAngle + segmentAngle
 						});
@@ -264,13 +258,13 @@
 				return {
 					month: d['Month'],
 					year: d['Year'],
-					army: d['Army'],
-					disease: d['Disease'],
-					wounds: d['Wounds'],
-					other: d['Other'],
-					diseaseRate: d['Disease.rate'],
-					woundsRate: d['Wounds.rate'],
-					otherRate: d['Other.rate'],
+					army: +d['Army'],
+					disease: +d['Disease'],
+					wounds: +d['Wounds'],
+					other: +d['Other'],
+					diseaseRate: +d['Disease.rate'],
+					woundsRate: +d['Wounds.rate'],
+					otherRate: +d['Other.rate'],
 				}
 			})
 			.get(function(d) {
